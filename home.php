@@ -50,11 +50,56 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== TRUE) {
                         echo "<td>{$row['brand']} {$row['category']}</td>";
                         echo '<td>$' . $row['pricePerDay'] . '</td>';
                         echo '<td>';
-                        echo '<a href="./item-hire.php?itemID=' . $row['itemID'] . '">Hire</a>';
+                        echo '<a href="./item-details.php?itemID=' . $row['itemID'] . '">Details</a>';
+                        echo ' | <a href="./item-hire.php?itemID=' . $row['itemID'] . '">Hire</a>';
                         if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == TRUE) {
                             echo ' | <a href="./item-update.php?itemID=' . $row['itemID'] . '">Update</a>';
                             echo ' | <a href="./item-delete.php?itemID=' . $row['itemID'] . '">Delete</a>';
                         }
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                } else {
+                    echo "Error: {$conn->errno}  {$conn->error}";
+                }
+                ?>
+            </tbody>
+        </table>
+        <label class="pt-4">All products you are currently hiring:</label>
+        <table class="table table-stripped">
+            <thead>
+                <tr>
+                    <th scope="col">Item ID</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Days Left</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $sql = "SELECT startDate, endDate FROM itemTransactions WHERE ";
+
+                $sql = "SELECT * FROM items WHERE userID = {$_SESSION['userID']}";
+                $result = $conn->query($sql);
+                if($result !== FALSE) {
+                    while($row = $result->fetch_assoc()) {
+                        echo '<tr>';
+                        echo '<th scope="row">' . $row['itemID'] . '</th>';
+                        echo "<td>{$row['brand']} {$row['category']}</td>";
+                        
+                        //get days left on hire
+                        $newSql = "SELECT startDate, endDate FROM itemTransactions WHERE userID = {$_SESSION['userID']} 
+                        AND itemID = {$row['itemID']}";
+                        $newResult = $conn->query($newSql);
+                        $data = $newResult->fetch_assoc();
+                        $start = new DateTime(date("Y-m-d"));
+                        $end = new DateTime(date($data['endDate']));
+                        $interval = $start->diff($end);
+                        $daysLeft = intval($interval->format('%d'));
+                        echo "<td>{$daysLeft}</td>";
+                        echo '<td>';
+                        echo '<a href="./item-details.php?itemID=' . $row['itemID'] . '">Details</a> | ';
+                        echo '<a href="./item-return.php?itemID=' . $row['itemID'] . '">Return</a>';
                         echo '</td>';
                         echo '</tr>';
                     }

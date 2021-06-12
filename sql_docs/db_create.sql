@@ -26,14 +26,43 @@ CREATE TABLE items (
     PRIMARY KEY (itemID),
     FOREIGN KEY (userID) REFERENCES users (userID)
 );
-/*
-CREATE TABLE itemTransaction (
+
+CREATE TABLE itemTransactions (
     transactionID INT(9) AUTO_INCREMENT,
     userID INT(9) NOT NULL,
     itemID INT(9) NOT NULL,
-    transactionStart DATE NOT NULL,
-    transactionFinish DATE NOT NULL,
-    wasOverdue BOOLEAN NOT NULL
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    active BOOLEAN NOT NULL,
+    daysOverdue INT(3) NOT NULL,
+    totalCost INT(9) NOT NULL,
+    PRIMARY KEY (transactionID),
+    FOREIGN KEY (userID) REFERENCES users (userID),
+    FOREIGN KEY (itemID) REFERENCES items (itemID)
+);
+
+/*
+CREATE TABLE liveTransactions (
+    transactionID INT(9) AUTO_INCREMENT,
+    userID INT(9) NOT NULL,
+    itemID INT(9) NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    active BOOLEAN NOT NULL,
+    overdue BOOLEAN NOT NULL
+    PRIMARY KEY (transactionID),
+    FOREIGN KEY (userID) REFERENCES users (userID),
+    FOREIGN KEY (itemID) REFERENCES items (itemID)
+);
+
+CREATE TABLE oldTransactions (
+    transactionID INT(9) AUTO_INCREMENT,
+    userID INT(9) NOT NULL,
+    itemID INT(9) NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    active BOOLEAN NOT NULL,
+    overdue BOOLEAN NOT NULL
     PRIMARY KEY (transactionID),
     FOREIGN KEY (userID) REFERENCES users (userID),
     FOREIGN KEY (itemID) REFERENCES items (itemID)
