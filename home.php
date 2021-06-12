@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//this is a test
 require("./config.php");
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== TRUE) {
